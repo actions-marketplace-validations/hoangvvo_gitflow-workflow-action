@@ -4,23 +4,33 @@ on:
       version:
         type: string
         required: true
-        description: "semver version to release"
+        description: "Version to release"
+  pull_request:
+    types:
+      - closed
+      - opened
 
-name: Create release
+name: Release
 
 jobs:
-  pre_release:
+  release_workflow:
     runs-on: ubuntu-latest
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
-      - name: gitflow-workflow-action create release
+      - name: gitflow-workflow-action release workflows
         uses: ./
         with:
           develop_branch: "develop"
           main_branch: "main"
           version: ${{ inputs.version }}
+          slack: >
+            {
+              "channel": "hoang-test",
+              "username_mapping": {
+                "hoangvvo": "U03B3E4UPV3"
+              }
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
